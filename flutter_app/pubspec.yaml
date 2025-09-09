@@ -1,0 +1,40 @@
+name: oasis_flutter
+description: Основное приложение на Flutter с WebView-частью (React + Ready Player Me)
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Навигация
+  go_router: ^14.2.3
+
+  # WebView для iOS/Android
+  webview_flutter: ^4.7.0
+
+  # Lottie-анимации (сплеш)
+  lottie: ^3.1.2
+
+  # Онбординг с Liquid Swipe
+  liquid_swipe: ^3.1.0
+
+  # Хранение локальных настроек
+  shared_preferences: ^2.2.2
+
+  # Красивые шрифты
+  google_fonts: ^6.2.1
+
+  # Для iOS (безопасное пространство и т.п.)
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
