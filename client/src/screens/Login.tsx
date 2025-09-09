@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";
+import { Button, Input } from "../components";
 
 const Login: React.FC = () => {
   const setLoggedIn = useAppStore((s) => s.setLoggedIn);
@@ -33,29 +34,27 @@ const Login: React.FC = () => {
         <form onSubmit={submit} className="space-y-3">
           <div>
             <div className="mb-1 text-xs text-white/70">Email</div>
-            {/*<Input*/}
-            {/*  type="email"*/}
-            {/*  placeholder="you@example.com"*/}
-            {/*  value={email}*/}
-            {/*  onChange={(e) => setEmail(e.target.value)}*/}
-            {/*  className="bg-black/30 text-white placeholder:text-white/40"*/}
-            {/*  required*/}
-            {/*/>*/}
+            <Input
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
 
-        <div>
+          <div>
             <div className="mb-1 text-xs text-white/70">Пароль</div>
-            {/*<Input*/}
-            {/*  type="password"*/}
-            {/*  placeholder="••••••••"*/}
-            {/*  value={pwd}*/}
-            {/*  onChange={(e) => setPwd(e.target.value)}*/}
-            {/*  className="bg-black/30 text-white placeholder:text-white/40"*/}
-            {/*  required*/}
-            {/*/>*/}
+            <Input
+              type="password"
+              placeholder="••••••••"
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              required
+            />
           </div>
 
-          {/*<Button type="submit" className="w-full">Войти</Button>*/}
+          <Button type="submit" className="w-full">Войти</Button>
         </form>
 
         <div className="mt-4 text-center text-sm text-white/70">

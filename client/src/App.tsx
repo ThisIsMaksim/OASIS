@@ -3,6 +3,9 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-
 import { useAppStore } from "./store/useAppStore";
 import { registerNavigator } from "./lib/bridge";
 import { AvatarEditor } from "./components/AvatarEditor";
+import { DebugPanel } from "./components/DebugPanel";
+// Импортируем модуль предзагрузки для автоматического запуска
+import "./lib/animationPreloader";
 
 import Onboarding from "./screens/Onboarding";
 import Login from "./screens/Login";
@@ -34,7 +37,7 @@ function App() {
   const isFullscreen = location.pathname === "/editor";
 
   return (
-    <div className={isFullscreen ? "h-dvh w-full overflow-hidden" : "min-h-dvh p-4 md:p-6"}>
+    <div className={isFullscreen ? "h-dvh w-full" : "min-h-dvh p-4 md:p-6"}>
       <Routes>
         {/* Поток входа */}
         <Route path="/" element={<RootRedirect />} />
@@ -51,6 +54,9 @@ function App() {
         {/* Фолбэк */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      
+      {/* Debug Panel - доступна на всех страницах */}
+      <DebugPanel />
     </div>
   );
 }

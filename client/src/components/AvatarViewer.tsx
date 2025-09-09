@@ -1,36 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as RPMVisage from '@readyplayerme/visage';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import { ANIMATIONS, getRandomIdleAnimation } from '../lib/animations';
 
 const { Avatar } = RPMVisage;
-
-// Список доступных анимаций
-export const ANIMATIONS = {
-  idle: {
-    url: "https://readyplayerme-assets.s3.amazonaws.com/animations/visage/male-idle.glb",
-    name: "Покой"
-  },
-  angry: {
-    url: "https://storage.yandexcloud.net/oasis/Angry.fbx",
-    name: "Злость"
-  },
-  'Happy Walk': {
-    url: "https://readyplayerme-assets.s3.amazonaws.com/animations/visage/male-wave.glb",
-    name: "Приветствие"
-  },
-  'Rumba Dancing': {
-    url: "https://storage.yandexcloud.net/oasis/Rumba%20Dancing.fbx",
-    name: "Румба"
-  },
-  'Punching Bag': {
-    url: "https://storage.yandexcloud.net/oasis/Punching%20Bag.fbx",
-    name: "Бокс"
-  },
-  'Silly Dancing': {
-    url: "https://storage.yandexcloud.net/oasis/Silly%20Dancing.fbx",
-    name: "Silly dance"
-  }
-};
 
 interface AvatarViewerProps {
   modelSrc: string;
@@ -44,43 +17,99 @@ interface AvatarViewerProps {
 
 export const AvatarViewer: React.FC<AvatarViewerProps> = ({
   modelSrc,
-  animationSrc,
   className = "",
   style = {},
   onLoaded,
   onLoading,
   showControls = false
 }) => {
-  const [currentAnimation, setCurrentAnimation] = useState<keyof typeof ANIMATIONS>('idle');
+  const [currentAnimation, setCurrentAnimation] = useState<string>('idle1');
   const [isPlaying, setIsPlaying] = useState(true);
+  const [autoSwitchIdle, setAutoSwitchIdle] = useState(true);
+  const animationTimeoutRef = useRef<number | null>(null);
 
-  const getAnimationSrc = () => {
-    if (animationSrc) return animationSrc;
-    return ANIMATIONS[currentAnimation].url;
+  // Функция для переключения на случайную idle анимацию
+  const switchToRandomIdle = () => {
+    if (!autoSwitchIdle) return;
+    
+    const randomIdle = getRandomIdleAnimation(currentAnimation);
+
+    if (randomIdle) {
+      console.log(`🎬 Переключение на случайную idle анимацию: ${randomIdle.key}`);
+      setCurrentAnimation(randomIdle.key);
+    }
   };
+
+  // Обработчик завершения анимации
+  const handleAnimationFinished = () => {
+    console.log(`✅ Анимация ${currentAnimation} завершена`);
+
+    switchToRandomIdle();
+  };
+
+  const handleLoaded = () => {
+    console.log('🎬 Аватар загружен');
+    if (onLoaded) {
+      onLoaded();
+    }
+  };
+
+  // Очистка таймера при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Очистка таймера при смене анимации
+  useEffect(() => {
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+      animationTimeoutRef.current = null;
+    }
+  }, [currentAnimation]);
 
   return (
     <div className={`avatar-viewer relative ${className}`} style={style}>
       <Avatar
-        animationSrc={getAnimationSrc()}
+        animations={ANIMATIONS}
+        activeAnimation={currentAnimation}
         backLightColor="#FFB878"
         backLightIntensity={6}
         modelSrc={modelSrc}
-        scale={0.95}
+        scale={1.2}
         shadows
         style={style}
         cameraInitialDistance={2.8}
-        cameraTarget={1.05}
+        cameraTarget={1.7}
+        onAnimationEnd={handleAnimationFinished}
+        onLoaded={handleLoaded}
+        onLoading={onLoading}
       />
       
       {showControls && (
         <div className="absolute bottom-4 left-4 right-4 z-10">
+          {/* Переключатель автоматической смены idle анимаций */}
+          <div className="mb-3 flex justify-center">
+            <label className="flex items-center gap-2 bg-black/50 px-3 py-2 rounded-full text-white text-xs">
+              <input
+                type="checkbox"
+                checked={autoSwitchIdle}
+                onChange={(e) => setAutoSwitchIdle(e.target.checked)}
+                className="w-3 h-3"
+              />
+              Автосмена idle анимаций
+            </label>
+          </div>
+          
           {/* Кнопки анимаций */}
           <div className="mb-3 flex flex-wrap gap-2 justify-center">
             {Object.entries(ANIMATIONS).map(([key, animation]) => (
               <button
                 key={key}
-                onClick={() => setCurrentAnimation(key as keyof typeof ANIMATIONS)}
+                onClick={() => setCurrentAnimation(key)}
                 className={`px-3 py-1.5 text-xs rounded-full transition ${
                   currentAnimation === key
                     ? 'bg-white text-black shadow-lg'
@@ -106,13 +135,21 @@ export const AvatarViewer: React.FC<AvatarViewerProps> = ({
               onClick={() => {
                 // Перезапуск анимации - меняем на ту же анимацию
                 const current = currentAnimation;
-                setCurrentAnimation('idle');
+                setCurrentAnimation('idle1');
                 setTimeout(() => setCurrentAnimation(current), 100);
               }}
               className="flex items-center justify-center w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full transition"
               title="Перезапустить"
             >
               <RotateCcw className="w-4 h-4" />
+            </button>
+            
+            <button
+              onClick={switchToRandomIdle}
+              className="flex items-center justify-center px-3 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full transition text-xs"
+              title="Случайная idle анимация"
+            >
+              🎲
             </button>
           </div>
         </div>

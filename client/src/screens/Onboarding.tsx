@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";
+import { Button } from "../components";
 
 const Onboarding: React.FC = () => {
   const setOnboardingDone = useAppStore((s) => s.setOnboardingDone);
@@ -25,9 +26,9 @@ const Onboarding: React.FC = () => {
           <li>— Лента и сообщения</li>
         </ul>
 
-        {/*<Button className="w-full mb-3" onClick={complete}>*/}
-        {/*  Продолжить*/}
-        {/*</Button>*/}
+        <Button className="w-full mb-3" onClick={complete}>
+          Продолжить
+        </Button>
         <button className="text-xs text-muted-foreground hover:underline" onClick={complete}>
           Пропустить
         </button>

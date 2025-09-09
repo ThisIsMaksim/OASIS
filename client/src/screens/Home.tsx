@@ -1,17 +1,16 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";
-import { AvatarViewer, InteractiveAvatarViewer } from "../components/AvatarViewer";
+import { AvatarViewer } from "../components/AvatarViewer";
+import { Button } from "../components";
 import {
   Home as HomeIcon,
   MessageCircle,
   Plus,
   Heart,
   User,
-  LogOut,
   Settings,
-  Camera,
-  Wand2,
+  LogOut,
 } from "lucide-react";
 
 type TabKey = "feed" | "messages" | "create" | "favorites" | "profile";
@@ -44,26 +43,6 @@ const MobileChrome: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   );
 };
 
-const FeedCard: React.FC<{
-  title: string;
-  subtitle?: string;
-  actions?: React.ReactNode;
-  children?: React.ReactNode;
-}> = ({ title, subtitle, actions, children }) => {
-  return (
-    <div className="glass relative overflow-hidden rounded-2xl border p-4 text-white">
-      <div className="mb-2 flex items-center justify-between">
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-white/70">{subtitle ?? "Featured"}</div>
-          <div className="text-2xl font-semibold leading-tight">{title}</div>
-        </div>
-        <div className="flex items-center gap-2">{actions}</div>
-      </div>
-      {children}
-    </div>
-  );
-};
-
 const FeedTab: React.FC = () => {
   const avatarUrl = useAppStore((s) => s.avatarUrl);
   
@@ -72,11 +51,12 @@ const FeedTab: React.FC = () => {
       <div className="glass relative overflow-hidden rounded-2xl border p-4 text-white">
         {avatarUrl ? (
           <div className="rounded-lg overflow-hidden" style={{ height: "60vh" }}>
-            <InteractiveAvatarViewer
+            <AvatarViewer
               modelSrc={avatarUrl}
               className="w-full h-full"
               onLoaded={() => console.log('Avatar loaded')}
               onLoading={() => console.log('Avatar loading')}
+              showControls={false}
             />
           </div>
         ) : (
@@ -172,56 +152,45 @@ const ProfileTab: React.FC = () => {
       {avatarUrl && (
         <div className="glass rounded-2xl border p-4">
           <div className="rounded-lg overflow-hidden bg-white/5" style={{ height: "200px" }}>
-            <InteractiveAvatarViewer
+            <AvatarViewer
               modelSrc={avatarUrl}
               className="w-full h-full"
+              showControls={false}
             />
           </div>
         </div>
       )}
 
-      {/* Демонстрационные страницы */}
+
+
       <div className="glass rounded-2xl border p-4">
-        <div className="text-sm text-white/80 mb-3">Демонстрации</div>
-        <div className="space-y-2">
-          <button
-            onClick={() => navigate("/demo/animations")}
-            className="w-full flex items-center justify-start gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-lg transition text-white/80 hover:text-white"
+        <div className="text-sm text-white/80">Аккаунт</div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setLoggedIn(false);
+              navigate("/login", { replace: true });
+            }}
           >
-            <Camera className="h-4 w-4" />
-            Демо анимаций
-          </button>
+            <LogOut className="mr-2 h-4 w-4" />
+            Выйти
+          </Button>
+          {avatarUrl && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (confirm("Удалить сохраненный аватар? Это действие нельзя отменить.")) {
+                  setAvatarUrl(null);
+                }
+              }}
+            >
+              Очистить аватар
+            </Button>
+          )}
         </div>
       </div>
-
-      {/*<div className="glass rounded-2xl border p-4">*/}
-      {/*  <div className="text-sm text-white/80">Аккаунт</div>*/}
-      {/*  <div className="mt-3 flex flex-wrap gap-2">*/}
-      {/*    <Button*/}
-      {/*      variant="secondary"*/}
-      {/*      onClick={() => {*/}
-      {/*        setLoggedIn(false);*/}
-      {/*        navigate("/login", { replace: true });*/}
-      {/*      }}*/}
-      {/*    >*/}
-      {/*      <LogOut className="mr-2 h-4 w-4" />*/}
-      {/*      Выйти*/}
-      {/*    </Button>*/}
-      {/*    {avatarUrl && (*/}
-      {/*      <Button*/}
-      {/*        variant="outline"*/}
-      {/*        size="sm"*/}
-      {/*        onClick={() => {*/}
-      {/*          if (confirm("Удалить сохраненный аватар? Это действие нельзя отменить.")) {*/}
-      {/*            setAvatarUrl(null);*/}
-      {/*          }*/}
-      {/*        }}*/}
-      {/*      >*/}
-      {/*        Очистить аватар*/}
-      {/*      </Button>*/}
-      {/*    )}*/}
-      {/*  </div>*/}
-      {/*</div>*/}
     </div>
   );
 };
@@ -250,7 +219,7 @@ const HomeScreen: React.FC = () => {
       <div className="mx-auto w-full max-w-md p-4 text-white">
         {/* Top chrome */}
         <div className="mb-4 flex items-center justify-between">
-          <div className="text-xl font-semibold">Buddy</div>
+          <div className="text-xl font-semibold"></div>
           <div className="flex items-center gap-2">
             <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Create">
               <Plus className="h-4 w-4" />
