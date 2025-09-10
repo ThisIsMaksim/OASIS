@@ -4,8 +4,6 @@ import { useAppStore } from "./store/useAppStore";
 import { registerNavigator } from "./lib/bridge";
 import { AvatarEditor } from "./components/AvatarEditor";
 import { DebugPanel } from "./components/DebugPanel";
-import { LoaderExamples } from "./components/LoaderExamples";
-// Импортируем модуль предзагрузки для автоматического запуска
 import "./lib/animationPreloader";
 
 import Onboarding from "./screens/Onboarding";

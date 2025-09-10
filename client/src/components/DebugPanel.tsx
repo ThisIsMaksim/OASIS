@@ -8,8 +8,6 @@ interface DebugPanelProps {
   className?: string;
 }
 
-type DebugTab = 'navigation' | 'avatar';
-
 export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
   const isOpen = useAppStore(s => s.debugPanelOpen);
   const setOpen = useAppStore(s => s.setDebugPanelOpen);
