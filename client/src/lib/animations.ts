@@ -50,21 +50,21 @@ export const ANIMATIONS: Record<string, AnimationConfig> = {
   rumbaDancing: {
     key: 'rumbaDancing',
     source: "https://storage.yandexcloud.net/oasis/Rumba%20Dancing.fbx",
-    repeat: 0,
+    repeat: 1,
     fadeTime: 0.6,
     name: "Румба"
   },
   punchingBag: {
     key: 'punchingBag',
     source: "https://storage.yandexcloud.net/oasis/Punching%20Bag.fbx",
-    repeat: 0,
+    repeat: 1,
     fadeTime: 0.4,
     name: "Бокс"
   },
   sillyDancing: {
     key: 'sillyDancing',
     source: "https://storage.yandexcloud.net/oasis/Silly%20Dancing.fbx",
-    repeat: 0,
+    repeat: 1,
     fadeTime: 0.5,
     name: "Радостный танец"
   },
