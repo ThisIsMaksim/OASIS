@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import {useLayoutEffect, useState} from 'react';
 import { Bug, X, Navigation, User, Home, Settings } from 'lucide-react';
 import {useNavigate} from 'react-router-dom';
 import { AvatarViewer } from './AvatarViewer';

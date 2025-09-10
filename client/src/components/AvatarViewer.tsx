@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as RPMVisage from '@readyplayerme/visage';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { ANIMATIONS, getRandomIdleAnimation } from '../lib/animations';

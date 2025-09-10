@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AvatarCreator, AvatarExportedEvent, UserSetEvent } from '@readyplayerme/react-avatar-creator';
 import { useAppStore } from '../store/useAppStore';
 import { useNavigate } from 'react-router-dom';
