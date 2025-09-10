@@ -7,16 +7,22 @@ import { DebugPanel } from "./components/DebugPanel";
 import "./lib/animationPreloader";
 
 import Onboarding from "./screens/Onboarding";
-import Login from "./screens/Login";
-import Register from "./screens/Register";
 import HomeScreen from "./screens/Home";
 
 function RootRedirect() {
   const onboardingDone = useAppStore((s) => s.onboardingDone);
-  const loggedIn = useAppStore((s) => s.loggedIn);
+  const avatarUrl = useAppStore((s) => s.avatarUrl);
 
-  const target = !onboardingDone ? "/onboarding" : !loggedIn ? "/login" : "/home";
+  const target =
+    !onboardingDone ? "/onboarding" :
+    (avatarUrl ? "/home" : "/editor");
+
   return <Navigate to={target} replace />;
+}
+
+function HomeOrEditor() {
+  const avatarUrl = useAppStore((s) => s.avatarUrl);
+  return avatarUrl ? <HomeScreen /> : <Navigate to="/editor" replace />;
 }
 
 function App() {
@@ -41,11 +47,9 @@ function App() {
         {/* Поток входа */}
         <Route path="/" element={<RootRedirect />} />
         <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
 
         {/* Главная с таббаром */}
-        <Route path="/home" element={<HomeScreen />} />
+        <Route path="/home" element={<HomeOrEditor />} />
 
         {/* Редактор и просмотр 3D */}
         <Route path="/editor" element={<AvatarEditor />} />

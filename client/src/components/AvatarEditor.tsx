@@ -39,8 +39,8 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) =
         // Вызываем callback если передан
         onAvatarCreated?.(avatarUrl);
         
-        // Редиректим на главную страницу
-        navigate('/#/home');
+        // Редиректим на страницу онбординга
+        navigate('/onboarding', { replace: true });
       } catch (urlError) {
         console.error('Invalid avatar URL received:', avatarUrl, urlError);
       }

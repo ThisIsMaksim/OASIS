@@ -9,7 +9,7 @@ const Onboarding: React.FC = () => {
 
   const complete = () => {
     setOnboardingDone(true);
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (

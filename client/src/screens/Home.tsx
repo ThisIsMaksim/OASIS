@@ -127,8 +127,7 @@ const FavoritesTab: React.FC = () => {
 };
 
 const ProfileTab: React.FC = () => {
-  const { setLoggedIn, avatarUrl, setAvatarUrl } = useAppStore((s) => ({
-    setLoggedIn: s.setLoggedIn,
+  const { avatarUrl, setAvatarUrl } = useAppStore((s) => ({
     avatarUrl: s.avatarUrl,
     setAvatarUrl: s.setAvatarUrl
   }));
@@ -171,8 +170,7 @@ const ProfileTab: React.FC = () => {
           <Button
             variant="secondary"
             onClick={() => {
-              setLoggedIn(false);
-              navigate("/login", { replace: true });
+              navigate("/", { replace: true });
             }}
           >
             <LogOut className="mr-2 h-4 w-4" />
@@ -198,7 +196,7 @@ const ProfileTab: React.FC = () => {
 };
 
 const HomeScreen: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [tab, setTab] = useState<TabKey>("feed");
 
   const renderTab = () => {
@@ -219,21 +217,21 @@ const HomeScreen: React.FC = () => {
   return (
     <MobileChrome>
       <div className="mx-auto w-full max-w-md p-4 text-white">
-        {/* Top chrome */}
-        <div className="mb-4 flex items-center justify-between">
-          <div className="text-xl font-semibold"></div>
-          <div className="flex items-center gap-2">
-            <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Create">
-              <Plus className="h-4 w-4" />
-            </button>
-            <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Messages">
-              <MessageCircle className="h-4 w-4" />
-            </button>
-            <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Profile">
-              <User className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        {/*/!* Top chrome *!/*/}
+        {/*<div className="mb-4 flex items-center justify-between">*/}
+        {/*  <div className="text-xl font-semibold"></div>*/}
+        {/*  <div className="flex items-center gap-2">*/}
+        {/*    <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Create">*/}
+        {/*      <Plus className="h-4 w-4" />*/}
+        {/*    </button>*/}
+        {/*    <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Messages">*/}
+        {/*      <MessageCircle className="h-4 w-4" />*/}
+        {/*    </button>*/}
+        {/*    <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Profile">*/}
+        {/*      <User className="h-4 w-4" />*/}
+        {/*    </button>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
 
         {renderTab()}
       </div>
@@ -241,39 +239,35 @@ const HomeScreen: React.FC = () => {
       {/* Bottom Tab Bar */}
       <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 mx-auto mb-4 flex w-full max-w-md justify-center px-4">
         <div className="pointer-events-auto glass flex h-[64px] w-full items-center justify-between rounded-2xl border px-2">
-          <div className="flex items-center gap-1">
-            <TabButton
-              active={tab === "feed"}
-              icon={<HomeIcon className="h-5 w-5" />}
-              onClick={() => setTab("feed")}
-            />
-            <TabButton
-              active={tab === "messages"}
-              icon={<MessageCircle className="h-5 w-5" />}
-              onClick={() => setTab("messages")}
-            />
-          </div>
+          <TabButton
+            active={tab === "feed"}
+            icon={<HomeIcon className="h-5 w-5" />}
+            onClick={() => setTab("feed")}
+          />
+          <TabButton
+            active={tab === "messages"}
+            icon={<MessageCircle className="h-5 w-5" />}
+            onClick={() => setTab("messages")}
+          />
 
-          <button
-            onClick={() => navigate("/editor")}
-            title="Create"
-            className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500 text-white shadow-[0_10px_30px_rgba(244,63,94,0.55)] transition hover:bg-rose-400"
-          >
-            <Plus className="h-6 w-6" />
-          </button>
+          {/*<button*/}
+          {/*  onClick={() => navigate("/editor")}*/}
+          {/*  title="Create"*/}
+          {/*  className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500 text-white shadow-[0_10px_30px_rgba(244,63,94,0.55)] transition hover:bg-rose-400"*/}
+          {/*>*/}
+          {/*  <Plus className="h-6 w-6" />*/}
+          {/*</button>*/}
 
-          <div className="flex items-center gap-1">
-            <TabButton
-              active={tab === "favorites"}
-              icon={<Heart className="h-5 w-5" />}
-              onClick={() => setTab("favorites")}
-            />
-            <TabButton
-              active={tab === "profile"}
-              icon={<User className="h-5 w-5" />}
-              onClick={() => setTab("profile")}
-            />
-          </div>
+          <TabButton
+            active={tab === "favorites"}
+            icon={<Heart className="h-5 w-5" />}
+            onClick={() => setTab("favorites")}
+          />
+          <TabButton
+            active={tab === "profile"}
+            icon={<User className="h-5 w-5" />}
+            onClick={() => setTab("profile")}
+          />
         </div>
       </div>
     </MobileChrome>

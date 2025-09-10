@@ -27,8 +27,6 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
     { label: 'Главная', path: '/home', icon: Home },
     { label: 'Редактор аватара', path: '/editor', icon: User },
     { label: 'Онбординг', path: '/onboarding', icon: Settings },
-    { label: 'Логин', path: '/login', icon: User },
-    { label: 'Регистрация', path: '/register', icon: User },
   ];
 
   const handleNavigate = (path: string) => {
