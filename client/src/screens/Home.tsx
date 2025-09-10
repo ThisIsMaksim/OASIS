@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";
 import { AvatarViewer } from "../components/AvatarViewer";
-import { Button } from "../components";
+import { Button, Loader } from "../components";
 import {
   Home as HomeIcon,
   MessageCircle,
@@ -57,6 +57,7 @@ const FeedTab: React.FC = () => {
               onLoaded={() => console.log('Avatar loaded')}
               onLoading={() => console.log('Avatar loading')}
               showControls={false}
+              loader={<Loader />}
             />
           </div>
         ) : (
@@ -156,6 +157,7 @@ const ProfileTab: React.FC = () => {
               modelSrc={avatarUrl}
               className="w-full h-full"
               showControls={false}
+              loader={<Loader />}
             />
           </div>
         </div>

@@ -25,7 +25,7 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) =
   const handleAvatarExported = (event: AvatarExportedEvent) => {
     const avatarUrl = event.data.url;
     
-    if (avatarUrl && typeof avatarUrl === 'string') {
+    if (avatarUrl) {
       try {
         // Проверяем, что URL валидный
         new URL(avatarUrl);
@@ -40,7 +40,7 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) =
         onAvatarCreated?.(avatarUrl);
         
         // Редиректим на главную страницу
-        navigate('/');
+        navigate('/#/home');
       } catch (urlError) {
         console.error('Invalid avatar URL received:', avatarUrl, urlError);
       }

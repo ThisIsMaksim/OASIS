@@ -22,5 +22,5 @@ export {
 export type { AnimationConfig } from '../lib/animations';
 
 // UI Components
-export { Button, Input } from './ui';
+export { Button, Input, Loader } from './ui';
 export type { ButtonProps, InputProps } from './ui';
