@@ -1,6 +1,6 @@
-import {useLayoutEffect, useState} from 'react';
+import {useState} from 'react';
 import { Bug, X, Navigation, User, Home, Settings } from 'lucide-react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import { AvatarViewer } from './AvatarViewer';
 import { useAppStore } from '../store/useAppStore';
 
@@ -14,8 +14,8 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<DebugTab>('navigation');
   const navigate = useNavigate();
+  const location = useLocation();
   const { avatarUrl } = useAppStore();
-  const [show, setShow] = useState(false)
 
   const navigationItems = [
     { label: 'Главная', path: '/home', icon: Home },
@@ -35,11 +35,8 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
     setIsOpen(false);
   };
 
-  useLayoutEffect(() => {
-    setShow(!window.location.href.includes('editor'))
-  }, [])
-
-  if (!show) {
+  // Скрываем дебаг панель на странице редактирования аватара
+  if (location.pathname === '/editor') {
     return null
   }
 
