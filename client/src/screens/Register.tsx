@@ -5,8 +5,6 @@ import { Button, Input } from "../components";
 
 const Register: React.FC = () => {
   const setLoggedIn = useAppStore((s) => s.setLoggedIn);
-  const setOnboardingDone = useAppStore((s) => s.setOnboardingDone);
-  const onboardingDone = useAppStore((s) => s.onboardingDone);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -16,15 +14,10 @@ const Register: React.FC = () => {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     // Мок-регистрация
-    setOnboardingDone(true);
     setLoggedIn(true);
     navigate("/home", { replace: true });
   };
 
-  // Если пользователь не прошел онбординг — отправляем на онбординг
-  if (!onboardingDone) {
-    navigate("/onboarding", { replace: true });
-  }
 
   return (
     <div className="min-h-dvh p-6 flex items-center justify-center">

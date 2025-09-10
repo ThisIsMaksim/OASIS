@@ -16,11 +16,6 @@ class CreateCharacterScreen extends StatelessWidget {
         title: const Text('Создание персонажа'),
         actions: [
           IconButton(
-            tooltip: 'Онбординг',
-            onPressed: () => context.go('/onboarding'),
-            icon: const Icon(Icons.menu_book_outlined),
-          ),
-          IconButton(
             tooltip: 'Полноэкранный редактор',
             onPressed: () => context.go('/rpm'),
             icon: const Icon(Icons.fullscreen),

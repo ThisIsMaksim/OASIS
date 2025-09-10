@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bug, X, Navigation, User, Home, Settings } from 'lucide-react';
+import { Bug, X, Navigation, User, Home } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import { ANIMATIONS } from '../lib/animations';
@@ -26,7 +26,6 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
   const navigationItems = [
     { label: 'Главная', path: '/home', icon: Home },
     { label: 'Редактор аватара', path: '/editor', icon: User },
-    { label: 'Онбординг', path: '/onboarding', icon: Settings },
   ];
 
   const handleNavigate = (path: string) => {

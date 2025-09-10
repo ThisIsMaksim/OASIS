@@ -118,7 +118,7 @@ export const AvatarViewer: FC<AvatarViewerProps> = ({
         modelSrc={modelSrc}
         scale={1.2}
         shadows
-        style={style}
+        style={{ width: '100%', height: '100%', ...style }}
         cameraInitialDistance={2.8}
         cameraTarget={1.7}
         onAnimationEnd={handleAnimationFinished}

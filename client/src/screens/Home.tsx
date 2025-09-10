@@ -39,7 +39,7 @@ const TabButton: React.FC<{
 
 const MobileChrome: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="min-h-dvh pb-[84px]">{children}</div>
+    <div className="h-dvh pb-[84px]">{children}</div>
   );
 };
 
@@ -47,10 +47,10 @@ const FeedTab: React.FC = () => {
   const avatarUrl = useAppStore((s) => s.avatarUrl);
   
   return (
-    <div className="space-y-4">
-      <div className="glass relative overflow-hidden rounded-2xl border p-4 text-white">
+    <div className="flex flex-col h-full">
+      <div className="glass relative overflow-hidden rounded-2xl border w-full h-full p-4 text-white">
         {avatarUrl ? (
-          <div className="rounded-lg overflow-hidden" style={{ height: "60vh" }}>
+          <div className="w-full h-full rounded-lg overflow-hidden">
             <AvatarViewer
               modelSrc={avatarUrl}
               className="w-full h-full"
@@ -61,7 +61,7 @@ const FeedTab: React.FC = () => {
             />
           </div>
         ) : (
-          <div className="rounded-lg bg-white/5 p-8 text-center" style={{ height: "60vh" }}>
+          <div className="w-full h-full rounded-lg bg-white/5 p-8 text-center">
             <div className="flex flex-col items-center justify-center h-full">
               <User className="h-16 w-16 text-white/30 mb-4" />
               <p className="text-white/70 mb-2">Нет аватара</p>
@@ -216,7 +216,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <MobileChrome>
-      <div className="mx-auto w-full max-w-md p-4 text-white">
+      <div className="w-full h-full p-4 text-white">
         {/*/!* Top chrome *!/*/}
         {/*<div className="mb-4 flex items-center justify-between">*/}
         {/*  <div className="text-xl font-semibold"></div>*/}

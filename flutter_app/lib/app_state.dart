@@ -4,18 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
   bool _ready = false;
-  bool _onboardingDone = false;
   bool _loggedIn = false;
   String? _avatarUrl;
 
   bool get isReady => _ready;
-  bool get onboardingDone => _onboardingDone;
   bool get loggedIn => _loggedIn;
   String? get avatarUrl => _avatarUrl;
 
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    _onboardingDone = prefs.getBool('onboardingDone') ?? false;
     _loggedIn = prefs.getBool('loggedIn') ?? false;
 
     // Храним последнюю известную ссылку на аватар
@@ -25,12 +22,6 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setOnboardingDone(bool v) async {
-    _onboardingDone = v;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('onboardingDone', v);
-    notifyListeners();
-  }
 
   Future<void> setLoggedIn(bool v) async {
     _loggedIn = v;

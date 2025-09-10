@@ -6,7 +6,6 @@ import { AvatarEditor } from "./components/AvatarEditor";
 import { DebugPanel } from "./components/DebugPanel";
 import "./lib/animationPreloader";
 
-import Onboarding from "./screens/Onboarding";
 import HomeScreen from "./screens/Home";
 
 function RootRedirect() {
@@ -40,11 +39,10 @@ function App() {
   const isFullscreen = location.pathname === "/editor";
 
   return (
-    <div className={isFullscreen ? "h-dvh w-full" : "min-h-dvh p-4 md:p-6"}>
+    <div className={isFullscreen ? "h-dvh w-full" : "h-dvh w-full"}>
       <Routes>
         {/* Поток входа */}
         <Route path="/" element={<RootRedirect />} />
-        <Route path="/onboarding" element={<Onboarding />} />
 
         {/* Главная с таббаром */}
         <Route path="/home" element={<HomeOrEditor />} />

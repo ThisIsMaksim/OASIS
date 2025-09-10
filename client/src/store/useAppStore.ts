@@ -4,7 +4,6 @@ type State = {
   dark: boolean;
   avatarUrl: string | null;
   avatarCreatedAt: string | null;
-  onboardingDone: boolean;
   loggedIn: boolean;
 
   // Debug panel UI state
@@ -21,7 +20,6 @@ type Actions = {
   setDark: (v: boolean) => void;
 
   setAvatarUrl: (url: string | null) => void;
-  setOnboardingDone: (v: boolean) => void;
   setLoggedIn: (v: boolean) => void;
 
   setDebugPanelOpen: (open: boolean) => void;
@@ -36,8 +34,6 @@ const initialAvatar =
   (typeof window !== "undefined" && localStorage.getItem("avatarUrl")) || null;
 const initialAvatarCreatedAt =
   (typeof window !== "undefined" && localStorage.getItem("avatarCreatedAt")) || null;
-const initialOnboarding =
-  typeof window !== "undefined" ? localStorage.getItem("onboardingDone") === "true" : false;
 const initialLoggedIn =
   typeof window !== "undefined" ? localStorage.getItem("loggedIn") === "true" : false;
 
@@ -54,7 +50,6 @@ export const useAppStore = create<State & Actions>((set) => ({
   dark: false,
   avatarUrl: initialAvatar,
   avatarCreatedAt: initialAvatarCreatedAt,
-  onboardingDone: initialOnboarding,
   loggedIn: initialLoggedIn,
 
   debugPanelOpen: initialDebugOpen,
@@ -80,12 +75,6 @@ export const useAppStore = create<State & Actions>((set) => ({
     }
   },
 
-  setOnboardingDone: (v) => {
-    set({ onboardingDone: v });
-    if (typeof window !== "undefined") {
-      localStorage.setItem("onboardingDone", String(v));
-    }
-  },
 
   setLoggedIn: (v) => {
     set({ loggedIn: v });

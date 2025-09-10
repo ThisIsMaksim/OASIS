@@ -5,7 +5,6 @@ import { Button, Input } from "../components";
 
 const Login: React.FC = () => {
   const setLoggedIn = useAppStore((s) => s.setLoggedIn);
-  const onboardingDone = useAppStore((s) => s.onboardingDone);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -18,10 +17,6 @@ const Login: React.FC = () => {
     navigate("/home", { replace: true });
   };
 
-  // Если пользователь не прошел онбординг — отправляем на онбординг
-  if (!onboardingDone) {
-    navigate("/onboarding", { replace: true });
-  }
 
   return (
     <div className="min-h-dvh p-6 flex items-center justify-center">
