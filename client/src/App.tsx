@@ -10,12 +10,10 @@ import Onboarding from "./screens/Onboarding";
 import HomeScreen from "./screens/Home";
 
 function RootRedirect() {
-  const onboardingDone = useAppStore((s) => s.onboardingDone);
+  // const onboardingDone = useAppStore((s) => s.onboardingDone);
   const avatarUrl = useAppStore((s) => s.avatarUrl);
 
-  const target =
-    !onboardingDone ? "/onboarding" :
-    (avatarUrl ? "/home" : "/editor");
+  const target = avatarUrl ? "/home" : "/editor"
 
   return <Navigate to={target} replace />;
 }
