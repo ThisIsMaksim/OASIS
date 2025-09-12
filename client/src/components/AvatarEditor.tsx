@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, FC } from 'react';
 import { AvatarCreator, AvatarExportedEvent, UserSetEvent } from '@readyplayerme/react-avatar-creator';
 import { useAppStore } from '../store/useAppStore';
 import { useNavigate } from 'react-router-dom';
@@ -8,15 +8,15 @@ interface AvatarEditorProps {
   onAvatarCreated?: (avatarUrl: string) => void;
 }
 
-export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) => {
-  const [isLoading, setIsLoading] = useState(true);
+export const AvatarEditor: FC<AvatarEditorProps> = ({ onAvatarCreated }) => {
+  // const [isLoading, setIsLoading] = useState(true);
   const { setAvatarUrl } = useAppStore();
   const navigate = useNavigate();
 
   // Убираем индикатор загрузки через некоторое время
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      // setIsLoading(false);
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -24,6 +24,7 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) =
 
   const handleAvatarExported = (event: AvatarExportedEvent) => {
     const avatarUrl = event.data.url;
+    const avatarId = event.data.avatarId;
     
     if (avatarUrl) {
       try {
@@ -32,6 +33,7 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) =
         
         // Сохраняем URL аватара в локальное хранилище
         localStorage.setItem('avatarUrl', avatarUrl);
+        localStorage.setItem('avatarId', avatarId);
         
         // Обновляем состояние в store
         setAvatarUrl(avatarUrl);
@@ -39,8 +41,8 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) =
         // Вызываем callback если передан
         onAvatarCreated?.(avatarUrl);
         
-        // Редиректим на главную
-        navigate('/home', { replace: true });
+        // Редиректим на главную и помечаем, что аватар только что создан
+        navigate('/home', { replace: true, state: { avatarJustCreated: true } });
       } catch (urlError) {
         console.error('Invalid avatar URL received:', avatarUrl, urlError);
       }
@@ -52,27 +54,26 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onAvatarCreated }) =
   const handleUserSet = (event: UserSetEvent) => {
     console.log('User data received:', event.data);
     // Когда пользователь установлен, можно убрать индикатор загрузки
-    setIsLoading(false);
+    // setIsLoading(false);
   };
 
   return (
     <div className="w-full h-dvh relative overflow-hidden">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-10">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-            <p className="text-white text-sm px-4">Загрузка редактора аватара...</p>
-          </div>
-        </div>
-      )}
+      {/*{isLoading && (*/}
+      {/*  <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-10">*/}
+      {/*    <div className="text-center">*/}
+      {/*      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>*/}
+      {/*      <p className="text-white text-sm px-4">Загрузка редактора аватара...</p>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
       
       <AvatarCreator
         subdomain={RPM_SUBDOMAIN}
         config={{
           ...RPM_CONFIG,
-          // Оптимизация для мобильных устройств
-          quickStart: false,
-          language: 'en', // Используем английский, так как русский может не поддерживаться
+          // @ts-ignore
+          avatarId: localStorage.getItem('avatarId') || '',
         }}
         style={{
           width: '100%',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bug, X, Navigation, User, Home } from 'lucide-react';
+import { Bug, X, Navigation, User, Home, UserPlus } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import { ANIMATIONS } from '../lib/animations';
@@ -26,6 +26,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
   const navigationItems = [
     { label: 'Главная', path: '/home', icon: Home },
     { label: 'Редактор аватара', path: '/editor', icon: User },
+    { label: 'Создание персонажа', path: '/create', icon: UserPlus },
   ];
 
   const handleNavigate = (path: string) => {
@@ -35,6 +36,11 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
 
   const openAvatarEditor = () => {
     navigate('/editor');
+    setOpen(false);
+  };
+
+  const openCreateCharacter = () => {
+    navigate('/create');
     setOpen(false);
   };
 
@@ -110,24 +116,53 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
             {/* Содержимое вкладок */}
             <div className="p-4 overflow-y-auto max-h-[60vh]">
               {activeTab === 'navigation' && (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Быстрая навигация
-                  </h3>
-                  {navigationItems.map((item) => {
-                    const IconComponent = item.icon;
-                    return (
-                      <button
-                        key={item.path}
-                        onClick={() => handleNavigate(item.path)}
-                        className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                      >
-                        <IconComponent className="w-5 h-5 text-gray-500" />
-                        <span className="text-gray-900 dark:text-white">{item.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <>
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                      Быстрая навигация
+                    </h3>
+                    {navigationItems.map((item) => {
+                      const IconComponent = item.icon;
+                      return (
+                        <button
+                          key={item.path}
+                          onClick={() => handleNavigate(item.path)}
+                          className="w-full flex items-center gap-3 p-3 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                        >
+                          <IconComponent className="w-5 h-5 text-gray-500" />
+                          <span className="text-gray-900 dark:text-white">{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-3 space-y-1">
+                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Создание персонажа
+                    </h3>
+                    <div className="ml-4 pl-3 border-l border-gray-200 dark:border-gray-700 space-y-1">
+                      {[
+                        { n: 1, label: "Базовые данные" },
+                        { n: 2, label: "Образ жизни" },
+                        { n: 3, label: "Цели и черты" },
+                        { n: 4, label: "Интересы" },
+                        { n: 5, label: "Табу" },
+                        { n: 6, label: "Социальные сети" },
+                      ].map((s) => (
+                        <button
+                          key={s.n}
+                          onClick={() => handleNavigate(`/create?step=${s.n}`)}
+                          className="w-full flex items-center gap-2 p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors text-xs"
+                        >
+                          <span className="w-4 h-4 grid place-items-center rounded-full bg-emerald-600 text-white text-[10px]">
+                            {s.n}
+                          </span>
+                          <span className="text-gray-900 dark:text-white">{s.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
               )}
 
               {activeTab === 'avatar' && (
@@ -143,6 +178,15 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
                   >
                     <User className="w-5 h-5" />
                     Открыть редактор аватара
+                  </button>
+
+                  {/* Кнопка открытия страницы создания персонажа */}
+                  <button
+                    onClick={openCreateCharacter}
+                    className="w-full mt-2 flex items-center justify-center gap-2 p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+                  >
+                    <UserPlus className="w-5 h-5" />
+                    Открыть страницу персонажа
                   </button>
 
                   {/* Настройки анимации — управляют основным просмотрщиком */}

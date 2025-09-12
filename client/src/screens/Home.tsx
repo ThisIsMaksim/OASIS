@@ -196,7 +196,7 @@ const ProfileTab: React.FC = () => {
 };
 
 const HomeScreen: React.FC = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<TabKey>("feed");
 
   const renderTab = () => {
@@ -217,22 +217,6 @@ const HomeScreen: React.FC = () => {
   return (
     <MobileChrome>
       <div className="w-full h-full p-4 text-white">
-        {/*/!* Top chrome *!/*/}
-        {/*<div className="mb-4 flex items-center justify-between">*/}
-        {/*  <div className="text-xl font-semibold"></div>*/}
-        {/*  <div className="flex items-center gap-2">*/}
-        {/*    <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Create">*/}
-        {/*      <Plus className="h-4 w-4" />*/}
-        {/*    </button>*/}
-        {/*    <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Messages">*/}
-        {/*      <MessageCircle className="h-4 w-4" />*/}
-        {/*    </button>*/}
-        {/*    <button className="rounded-full bg-white/10 p-2 backdrop-blur hover:bg-white/15" title="Profile">*/}
-        {/*      <User className="h-4 w-4" />*/}
-        {/*    </button>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-
         {renderTab()}
       </div>
 
@@ -250,14 +234,11 @@ const HomeScreen: React.FC = () => {
             onClick={() => setTab("messages")}
           />
 
-          {/*<button*/}
-          {/*  onClick={() => navigate("/editor")}*/}
-          {/*  title="Create"*/}
-          {/*  className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500 text-white shadow-[0_10px_30px_rgba(244,63,94,0.55)] transition hover:bg-rose-400"*/}
-          {/*>*/}
-          {/*  <Plus className="h-6 w-6" />*/}
-          {/*</button>*/}
-
+          <TabButton
+            icon={<Plus className="h-5 w-5" />}
+            onClick={() => navigate("/create")}
+          />
+          
           <TabButton
             active={tab === "favorites"}
             icon={<Heart className="h-5 w-5" />}

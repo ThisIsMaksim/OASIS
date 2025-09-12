@@ -7,6 +7,7 @@ import { DebugPanel } from "./components/DebugPanel";
 import "./lib/animationPreloader";
 
 import HomeScreen from "./screens/Home";
+import CreateCharacter from "./screens/CreateCharacter";
 
 function RootRedirect() {
   // const onboardingDone = useAppStore((s) => s.onboardingDone);
@@ -19,7 +20,22 @@ function RootRedirect() {
 
 function HomeOrEditor() {
   const avatarUrl = useAppStore((s) => s.avatarUrl);
-  return avatarUrl ? <HomeScreen /> : <Navigate to="/editor" replace />;
+  const location = useLocation();
+  const justCreated = (location.state as any)?.avatarJustCreated;
+
+  if (avatarUrl) {
+    return <HomeScreen />;
+  }
+
+  if (justCreated) {
+    return (
+      <div className="h-dvh w-full flex items-center justify-center text-white">
+        Загрузка аватара...
+      </div>
+    );
+  }
+
+  return <Navigate to="/editor" replace />;
 }
 
 function App() {
@@ -49,7 +65,10 @@ function App() {
 
         {/* Редактор и просмотр 3D */}
         <Route path="/editor" element={<AvatarEditor />} />
-
+        
+        {/* Создание/редактирование персонажа */}
+        <Route path="/create" element={<CreateCharacter />} />
+        
         {/* Фолбэк */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
