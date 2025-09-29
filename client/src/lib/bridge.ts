@@ -1,3 +1,4 @@
+export const API_BASE_URL = "http://158.160.200.56:8080";
 /* Bridge between WebView (React) and native (Flutter) via JS exposed API and postMessage */
 import { useAppStore } from "../store/useAppStore";
 
