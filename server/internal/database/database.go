@@ -1,68 +1,64 @@
 package database
 
 import (
-	"fmt"
-	"time"
+	"context"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func Connect() (*gorm.DB, error) {
+type Mongo struct {
+	Client *mongo.Client
+	DB     *mongo.Database
+	Users  *mongo.Collection
+}
+
+func Connect() (*Mongo, error) {
 	_ = godotenv.Load()
 
-	dialect := getEnv("DB_DIALECT", "postgres")
+	uri := getEnv("MONGO_URI", "mongodb://localhost:27017")
+	dbname := getEnv("MONGO_DB", "appdb")
 
-	cfg := &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Warn),
-	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	// SQLite (локальная разработка без установленной Postgres/Docker)
-	if dialect == "sqlite" {
-		path := getEnv("DB_SQLITE_PATH", "./dev.db")
-		db, err := gorm.Open(sqlite.Open(path), cfg)
-		if err != nil {
-			return nil, err
-		}
-		sqlDB, err := db.DB()
-		if err != nil {
-			return nil, err
-		}
-		// Для sqlite достаточно минимальных лимитов
-		sqlDB.SetMaxOpenConns(1)
-		sqlDB.SetMaxIdleConns(1)
-		sqlDB.SetConnMaxLifetime(5 * time.Minute)
-		return db, nil
-	}
-
-	// Postgres (боевой/докер окружения)
-	host := getEnv("DB_HOST", "localhost")
-	port := getEnv("DB_PORT", "5432")
-	user := getEnv("DB_USER", "postgres")
-	password := getEnv("DB_PASSWORD", "postgres")
-	dbname := getEnv("DB_NAME", "appdb")
-	sslmode := getEnv("DB_SSLMODE", "disable")
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=UTC", host, user, password, dbname, port, sslmode)
-
-	db, err := gorm.Open(postgres.Open(dsn), cfg)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, err
 	}
 
-	sqlDB, err := db.DB()
-	if err != nil {
+	// Проверка соединения
+	if err := client.Ping(ctx, readpref.Primary()); err != nil {
 		return nil, err
 	}
-	sqlDB.SetMaxOpenConns(25)
-	sqlDB.SetMaxIdleConns(25)
-	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 
-	return db, nil
+	db := client.Database(dbname)
+	m := &Mongo{
+		Client: client,
+		DB:     db,
+		Users:  db.Collection("users"),
+	}
+
+	// Индексы
+	if err := ensureIndexes(ctx, m); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+func ensureIndexes(ctx context.Context, m *Mongo) error {
+	// Уникальный индекс на email
+	_, err := m.Users.Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys:    bson.D{{Key: "email", Value: 1}},
+		Options: options.Index().SetUnique(true).SetName("uniq_email"),
+	})
+	return err
 }
 
 func getEnv(key, def string) string {
@@ -71,3 +67,4 @@ func getEnv(key, def string) string {
 	}
 	return def
 }
+

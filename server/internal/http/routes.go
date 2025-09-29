@@ -2,12 +2,13 @@ package http
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
 
+	"example.com/server/internal/database"
 	"example.com/server/internal/models"
 )
 
-func Register(app *fiber.App, db *gorm.DB) {
+func Register(app *fiber.App, db *mongo.Database) {
 	api := app.Group("/api")
 
 	// Healthcheck
@@ -16,7 +17,11 @@ func Register(app *fiber.App, db *gorm.DB) {
 	})
 
 	// Auth handlers
-	h := NewAuthHandler(db)
+	mongoDB, err := database.Connect()
+	if err != nil {
+		panic("Failed to connect to MongoDB")
+	}
+	h := NewAuthHandler(mongoDB)
 	api.Post("/auth/register", h.Register)
 	api.Post("/auth/login", h.Login)
 	api.Get("/me", h.RequireAuth, h.Me)
@@ -24,7 +29,11 @@ func Register(app *fiber.App, db *gorm.DB) {
 	// Optional users listing for debugging/admin
 	api.Get("/users", func(c *fiber.Ctx) error {
 		var users []models.User
-		if err := db.Find(&users).Error; err != nil {
+		cursor, err := db.Collection("users").Find(c.Context(), map[string]interface{}{})
+		if err != nil {
+			return fiber.ErrInternalServerError
+		}
+		if err := cursor.All(c.Context(), &users); err != nil {
 			return fiber.ErrInternalServerError
 		}
 		return c.JSON(users)

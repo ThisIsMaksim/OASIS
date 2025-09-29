@@ -1,7 +1,7 @@
 package http
 
 import (
-	"errors"
+	"example.com/server/internal/database"
 	"os"
 	"strconv"
 	"strings"
@@ -10,18 +10,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 
 	"example.com/server/internal/models"
 )
 
 type AuthHandler struct {
-	db     *gorm.DB
+	db     *database.Mongo
 	secret []byte
 	ttl    time.Duration
 }
 
-func NewAuthHandler(db *gorm.DB) *AuthHandler {
+func NewAuthHandler(db *database.Mongo) *AuthHandler {
 	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
 		secret = "dev-secret-change-me"
@@ -66,9 +65,9 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "name, email and password are required")
 	}
 	var existing models.User
-	if err := h.db.Where("email = ?", req.Email).First(&existing).Error; err == nil {
+	if err := h.db.Users.FindOne(c.Context(), map[string]interface{}{"email": req.Email}).Decode(&existing); err == nil {
 		return fiber.NewError(fiber.StatusConflict, "email already in use")
-	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+	} else if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "db error")
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
@@ -81,10 +80,10 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 		AvatarURL:    strings.TrimSpace(req.AvatarURL),
 		PasswordHash: string(hash),
 	}
-	if err := h.db.Create(&user).Error; err != nil {
+	if _, err := h.db.Users.InsertOne(c.Context(), user); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "db error")
 	}
-	token, err := h.makeToken(user.ID)
+	token, err := h.makeToken(user.ID.Hex())
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "token error")
 	}
@@ -101,8 +100,8 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "email and password are required")
 	}
 	var user models.User
-	if err := h.db.Where("email = ?", email).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := h.db.Users.FindOne(c.Context(), map[string]interface{}{"email": email}).Decode(&user); err != nil {
+		if err != nil {
 			return fiber.NewError(fiber.StatusUnauthorized, "invalid credentials")
 		}
 		return fiber.NewError(fiber.StatusInternalServerError, "db error")
@@ -110,7 +109,7 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
 		return fiber.NewError(fiber.StatusUnauthorized, "invalid credentials")
 	}
-	token, err := h.makeToken(user.ID)
+	token, err := h.makeToken(user.ID.Hex())
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "token error")
 	}
@@ -145,8 +144,8 @@ func (h *AuthHandler) RequireAuth(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "invalid token subject")
 	}
 	var user models.User
-	if err := h.db.First(&user, "id = ?", uint(uid64)).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := h.db.Users.FindOne(c.Context(), map[string]interface{}{"_id": uid64}).Decode(&user); err != nil {
+		if err != nil {
 			return fiber.NewError(fiber.StatusUnauthorized, "user not found")
 		}
 		return fiber.NewError(fiber.StatusInternalServerError, "db error")
@@ -163,10 +162,10 @@ func (h *AuthHandler) Me(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func (h *AuthHandler) makeToken(uid uint) (string, error) {
+func (h *AuthHandler) makeToken(uid string) (string, error) {
 	now := time.Now()
 	claims := jwt.RegisteredClaims{
-		Subject:   strconv.FormatUint(uint64(uid), 10),
+		Subject:   uid,
 		ExpiresAt: jwt.NewNumericDate(now.Add(h.ttl)),
 		IssuedAt:  jwt.NewNumericDate(now),
 	}
