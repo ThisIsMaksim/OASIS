@@ -2,8 +2,10 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"gorm.io/gorm"
 
 	"example.com/server/internal/database"
@@ -20,9 +22,16 @@ func main() {
 	migrate(db)
 
 	app := fiber.New()
+	// Разрешаем CORS для фронтенда (по умолчанию все источники).
+	app.Use(cors.New())
+
 	http.Register(app, db)
 
-	addr := ":8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	addr := ":" + port
 	log.Printf("server listening on %s", addr)
 	if err := app.Listen(addr); err != nil {
 		log.Fatal(err)

@@ -51,7 +51,7 @@
 
 @layer base {
   * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
+  body { @apply bg-background text-foreground font-roboto; }
 }
 
 /* Gradient background overlay behind Tailwind theme colors */

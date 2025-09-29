@@ -9,6 +9,7 @@ import {
   type FamilyStatus,
 } from "../store/useProfileStore";
 import { z } from "zod";
+import { useAppStore } from "../store/useAppStore";
 
 // Подсказки по профессиям для datalist
 const PROFESSIONS = [
@@ -253,6 +254,7 @@ const Bubble: React.FC<{
 
 const CreateCharacter: React.FC = () => {
   const navigate = useNavigate();
+  const setLoggedIn = useAppStore((s) => s.setLoggedIn);
 
   const profile = useProfileStore((s) => ({
     firstName: s.firstName,
@@ -536,6 +538,9 @@ const CreateCharacter: React.FC = () => {
     } else {
       setProfile(next);
     }
+
+    // После успешного сохранения профиля считаем пользователя онборженным
+    setLoggedIn(true);
 
     navigate("/home", { replace: true });
   };

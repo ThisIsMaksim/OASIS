@@ -8,6 +8,7 @@ export {
 } from './AvatarViewer';
 export { ErrorBoundary } from './ErrorBoundary';
 export { DebugPanel } from './DebugPanel';
+export { Logo } from './Logo';
 
 // Экспортируем константы анимаций
 export {

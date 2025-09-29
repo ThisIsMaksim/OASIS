@@ -8,20 +8,36 @@ import "./lib/animationPreloader";
 
 import HomeScreen from "./screens/Home";
 import CreateCharacter from "./screens/CreateCharacter";
+import FeedScreen from "./screens/Feed";
+import EpisodeScreen from "./screens/Episode";
+import Onboarding from "./screens/Onboarding";
+import Login from "./screens/Login";
+import Register from "./screens/Register";
 
 function RootRedirect() {
-  // const onboardingDone = useAppStore((s) => s.onboardingDone);
+  const loggedIn = useAppStore((s) => s.loggedIn);
   const avatarUrl = useAppStore((s) => s.avatarUrl);
 
-  const target = avatarUrl ? "/home" : "/editor"
+  const target = !loggedIn ? "/onboarding" : (avatarUrl ? "/home" : "/editor");
 
   return <Navigate to={target} replace />;
 }
 
 function HomeOrEditor() {
+  const loggedIn = useAppStore((s) => s.loggedIn);
   const avatarUrl = useAppStore((s) => s.avatarUrl);
   const location = useLocation();
   const justCreated = (location.state as any)?.avatarJustCreated;
+  const preview = new URLSearchParams(location.search).get('preview') === '1';
+
+  // Превью-режим позволяет открыть главную даже без логина/аватара (для дебага)
+  if (preview) {
+    return <HomeScreen />;
+  }
+
+  if (!loggedIn) {
+    return <Navigate to="/onboarding" replace />;
+  }
 
   if (avatarUrl) {
     return <HomeScreen />;
@@ -59,6 +75,9 @@ function App() {
       <Routes>
         {/* Поток входа */}
         <Route path="/" element={<RootRedirect />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Главная с таббаром */}
         <Route path="/home" element={<HomeOrEditor />} />
@@ -68,6 +87,10 @@ function App() {
         
         {/* Создание/редактирование персонажа */}
         <Route path="/create" element={<CreateCharacter />} />
+        
+        {/* Лента эпизодов */}
+        <Route path="/feed" element={<FeedScreen />} />
+        <Route path="/feed/:id" element={<EpisodeScreen />} />
         
         {/* Фолбэк */}
         <Route path="*" element={<Navigate to="/" replace />} />

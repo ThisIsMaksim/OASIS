@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";
 import { AvatarViewer } from "../components/AvatarViewer";
-import { Button, Loader } from "../components";
+import { Button, Loader, Logo } from "../components";
 import {
   Home as HomeIcon,
   MessageCircle,
@@ -216,7 +216,16 @@ const HomeScreen: React.FC = () => {
 
   return (
     <MobileChrome>
-      <div className="w-full h-full p-4 text-white">
+      {/* Top Header */}
+      <header className="fixed inset-x-0 top-0 z-40">
+        <div className="mx-auto w-full max-w-md px-4">
+          <div className="glass rounded-b-2xl border px-4 py-2 flex items-center justify-center">
+            <Logo size="md" variant="gradient" />
+          </div>
+        </div>
+      </header>
+
+      <div className="w-full h-full p-4 pt-16 text-white">
         {renderTab()}
       </div>
 

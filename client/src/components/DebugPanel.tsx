@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bug, X, Navigation, User, Home, UserPlus } from 'lucide-react';
+import { Bug, X, Navigation, User, Home, UserPlus, Sparkles } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import { ANIMATIONS } from '../lib/animations';
@@ -15,7 +15,8 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
   const setActiveTab = useAppStore(s => s.setDebugActiveTab);
   const navigate = useNavigate();
   const location = useLocation();
-  const { avatarUrl, animationActiveKey, animationAutoSwitchIdle, setAnimationActiveKey, setAnimationAutoSwitchIdle } = useAppStore(s => ({
+  const { loggedIn, avatarUrl, animationActiveKey, animationAutoSwitchIdle, setAnimationActiveKey, setAnimationAutoSwitchIdle } = useAppStore(s => ({
+    loggedIn: s.loggedIn,
     avatarUrl: s.avatarUrl,
     animationActiveKey: s.animationActiveKey,
     animationAutoSwitchIdle: s.animationAutoSwitchIdle,
@@ -24,12 +25,17 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ className = '' }) => {
   }));
 
   const navigationItems = [
+    { label: 'Онбординг', path: '/onboarding', icon: Sparkles },
     { label: 'Главная', path: '/home', icon: Home },
     { label: 'Редактор аватара', path: '/editor', icon: User },
     { label: 'Создание персонажа', path: '/create', icon: UserPlus },
   ];
 
   const handleNavigate = (path: string) => {
+    // Если не залогинен, открываем главную в режиме превью
+    if (path.startsWith('/home') && !loggedIn) {
+      path = '/home?preview=1';
+    }
     navigate(path);
     setOpen(false);
   };
